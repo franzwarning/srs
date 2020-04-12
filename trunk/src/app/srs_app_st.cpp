@@ -31,6 +31,7 @@ using namespace std;
 #include <srs_kernel_log.hpp>
 #include <srs_app_utility.hpp>
 #include <srs_app_log.hpp>
+#include <errno.h>
 
 ISrsCoroutineHandler::ISrsCoroutineHandler()
 {
@@ -143,6 +144,10 @@ void SrsSTCoroutine::stop()
     if (trd) {
         void* res = NULL;
         int r0 = st_thread_join((st_thread_t)trd, &res);
+        if (r0) {
+            srs_warn("THIS WAS NEVER SUPPOSED TO HAPPEN PEOPLE!!!!!!!! %d", errno);
+            return;
+        }
         srs_assert(!r0);
 
         srs_error_t err_res = (srs_error_t)res;
